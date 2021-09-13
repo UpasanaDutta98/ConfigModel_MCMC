@@ -1,0 +1,12 @@
+LICENSE
+MANIFEST.in
+README.md
+requirements.txt
+setup.py
+ConfigModel_MCMC/ConfigModel_MCMC.py
+ConfigModel_MCMC/__init__.py
+ConfigModel_MCMC.egg-info/PKG-INFO
+ConfigModel_MCMC.egg-info/SOURCES.txt
+ConfigModel_MCMC.egg-info/dependency_links.txt
+ConfigModel_MCMC.egg-info/requires.txt
+ConfigModel_MCMC.egg-info/top_level.txt

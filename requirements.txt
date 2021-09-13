@@ -1,0 +1,10 @@
+# Library dependencies for the python code.  
+#### ESSENTIAL LIBRARIES FOR MAIN FUNCTIONALITY ####
+
+numpy>=1.17.1
+networkx>=2.4
+scipy>=1.4.1
+numba==0.49.1
+arch==5.0.1
+python-igraph==0.9.6
+tqdm==4.62.2

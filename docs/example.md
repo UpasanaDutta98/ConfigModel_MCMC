@@ -72,6 +72,21 @@ Output:
 
 In the above code, the first 5 networks are generated over a loop, while the next 5 networks are generated using a single command by specifying ```count=5``` as an argument to the function `get_graph( )`. Both ways are equally efficient on average. The default value of ```count``` is 1. The degree assortativity values of each of the networks generated are printed for reference.
 
+### Using igraph 
+
+The networks sampled from the Configuration model are by default `networkx` Graph objects. If the sampled networks are instead desired to be `igraph` Graph objects, you can specify it as the `return_type` argument to the `get_graph( )` function as shown below. Using "igraph" is typically much faster than using "networkx". This is also helpful when the end goal is to calculate some networks statistic of the sampled graphs, since [igraph](https://pypi.org/project/python-igraph/) offers extremely time-efficient [implementations](https://igraph.org/python/doc/api/igraph._igraph.GraphBase.html) of several widely-used network statistics.
+
+```python
+# An example network 
+G = nx.gnp_random_graph(n = 100, p = 0.1)
+
+# Specify the graph space and create a new object (using default graph space here)
+mcmc_object = CM.MCMC(G)
+
+# Get 5 more graphs using a single line.
+list_of_graphs = mcmc_object.get_graph(count=5, return_type = "igraph")
+```
+
 ### Sampling Gap heuristics
 
 If the network does not satisfy the conditions under which the automatic selection of the Sampling Gap is possible, the Sampling Gap algorithm will be run. This function might take a while, if the network is large.

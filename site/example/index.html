@@ -59,6 +59,8 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#sample-multiple-graphs">Sample multiple graphs</a>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#using-igraph">Using igraph</a>
+    </li>
     <li class="toctree-l2"><a class="reference internal" href="#sampling-gap-heuristics">Sampling Gap heuristics</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#running-the-sampling-gap-algorithm">Running the Sampling Gap Algorithm</a>
@@ -159,6 +161,17 @@ print()
 -0.0405 -0.0276 -0.0053 0.016 -0.0153
 </code></pre>
 <p>In the above code, the first 5 networks are generated over a loop, while the next 5 networks are generated using a single command by specifying <code>count=5</code> as an argument to the function <code>get_graph( )</code>. Both ways are equally efficient on average. The default value of <code>count</code> is 1. The degree assortativity values of each of the networks generated are printed for reference.</p>
+<h3 id="using-igraph">Using igraph</h3>
+<p>The networks sampled from the Configuration model are by default <code>networkx</code> Graph objects. If the sampled networks are instead desired to be <code>igraph</code> Graph objects, you can specify it as the <code>return_type</code> argument to the <code>get_graph( )</code> function as shown below. Using "igraph" is typically much faster than using "networkx". This is also helpful when the end goal is to calculate some networks statistic of the sampled graphs, since <a href="https://pypi.org/project/python-igraph/">igraph</a> offers extremely time-efficient <a href="https://igraph.org/python/doc/api/igraph._igraph.GraphBase.html">implementations</a> of several widely-used network statistics.</p>
+<pre><code class="language-python"># An example network 
+G = nx.gnp_random_graph(n = 100, p = 0.1)
+
+# Specify the graph space and create a new object (using default graph space here)
+mcmc_object = CM.MCMC(G)
+
+# Get 5 more graphs using a single line.
+list_of_graphs = mcmc_object.get_graph(count=5, return_type = &quot;igraph&quot;)
+</code></pre>
 <h3 id="sampling-gap-heuristics">Sampling Gap heuristics</h3>
 <p>If the network does not satisfy the conditions under which the automatic selection of the Sampling Gap is possible, the Sampling Gap algorithm will be run. This function might take a while, if the network is large.</p>
 <pre><code class="language-python"># read the Karate Club network

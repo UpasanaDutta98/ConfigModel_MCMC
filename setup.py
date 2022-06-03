@@ -23,15 +23,15 @@ def read_requirements(filename):
 setup(
     name="ConfigModel_MCMC",
     packages=list(find_packages('.')),
-    version="0.0.2",
-    author="Upasana Dutta; Aaron Clauset",
+    version="0.0.7",
+    author="Upasana Dutta; Bailey K. Fosdick; Aaron Clauset",
     author_email="upasana.dutta@colorado.edu",
     description="A tool for sampling networks from the Configuration model",
     long_description=long_description,
     long_description_content_type="text/markdown",
     setup_requires=read_requirements('requirements.txt'),
     install_requires=read_requirements('requirements.txt'),
-    url="", # Link to paper, or github.
+    url="https://arxiv.org/abs/2105.12120", # Link to paper, or github.
     include_package_data=True,
     keywords='ConfigModel_MCMC, MCMC, Configuration model, double edge swap, degree sequence, null distribution, random graph',
     classifiers=[

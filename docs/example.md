@@ -2,13 +2,13 @@
 
 ### A simple example.
 
-Here is a basic example.
+Here is a basic example. Note that the input network should be a networkx graph.
 
 ```python
 import ConfigModel_MCMC as CM
 import networkx as nx
 
-# An example network 
+# An example network
 G = nx.gnp_random_graph(n = 100, p = 0.1)
 
 # Specify the graph space and create a new object
@@ -29,7 +29,7 @@ If no graph space is specified, the simple vertex-labeled graph space will be ch
 # An example network 
 G = nx.gnp_random_graph(n = 100, p = 0.1)
 
-# Specify the graph space and create a new object
+# Use the default graph space (simple vertex-labeled) and create a new object
 mcmc_object = CM.MCMC(G)
 
 # Get a new graph (G_2) from the Configuration model
@@ -80,10 +80,10 @@ The networks sampled from the Configuration model are by default `networkx` Grap
 # An example network 
 G = nx.gnp_random_graph(n = 100, p = 0.1)
 
-# Specify the graph space and create a new object (using default graph space here)
+# Create a new object (using default graph space here)
 mcmc_object = CM.MCMC(G)
 
-# Get 5 more graphs using a single line.
+# Get 5 igraph networks from the Configuration model
 list_of_graphs = mcmc_object.get_graph(count=5, return_type = "igraph")
 ```
 
@@ -92,8 +92,8 @@ list_of_graphs = mcmc_object.get_graph(count=5, return_type = "igraph")
 If the network does not satisfy the conditions under which the automatic selection of the Sampling Gap is possible, the Sampling Gap algorithm will be run. This function might take a while, if the network is large.
 
 ```python
-# read the Karate Club network
-G = nx.karate_club_graph()
+# A dense example network
+G = nx.gnp_random_graph(n = 50, p = 0.15)
 
 # Specify the graph space and create a new object
 allow_loops = False
@@ -101,7 +101,7 @@ allow_multi = False
 is_vertex_labeled = True
 mcmc_object = CM.MCMC(G, allow_loops, allow_multi, is_vertex_labeled)
 
-# Obtain 5 graphs from the Configuration model
+# Get 5 graphs from the Configuration model
 list_of_graphs = mcmc_object.get_graph(count=5)
 ```
 
@@ -114,13 +114,13 @@ Running the Sampling Gap Algorithm. This might take a while for large graphs....
 ----- Initial burn-in complete -----
 ```
 
-The above code reads the Karate Club network and samples 5 graphs from the vertex-labeled simple graph space. The network does not satisfy the contraints necessary for the automatic selection of the sampling gap, because of its fairly high density. So the Sampling Gap Algorithm is called. A progress bar is displayed during the burn-in period of the MCMC walk. The variable `list_of_graphs` contains the 5 simple vertex-labeled graphs sampled from the Configuration model.
+The above code reads the network and samples 5 graphs from the vertex-labeled simple graph space. The network does not satisfy the contraints necessary for the automatic selection of the sampling gap, because of its fairly high density. So the Sampling Gap Algorithm is internally called. A progress bar is displayed during the burn-in period of the MCMC walk. The variable `list_of_graphs` contains the 5 simple vertex-labeled graphs sampled from the Configuration model.
 
 The messages printed in the output can be muted by specifying ```verbose = False``` while creating the MCMC object. The deafult value is ```verbose = True```.
 
 ```python
-# read the Karate Club network
-G = nx.karate_club_graph()
+# A dense example network
+G = nx.gnp_random_graph(n = 50, p = 0.15)
 
 # Specify the graph space and create a new object
 allow_loops = False
@@ -128,7 +128,7 @@ allow_multi = False
 is_vertex_labeled = True
 mcmc_object = CM.MCMC(G, allow_loops, allow_multi, is_vertex_labeled, verbose=False)
 
-# Obtain 5 graphs from the Configuration model
+# Get 5 graphs from the Configuration model
 list_of_graphs = mcmc_object.get_graph(count=5)
 ```
 
@@ -137,8 +137,8 @@ list_of_graphs = mcmc_object.get_graph(count=5)
 If you want to run the Sampling Gap Algorithm to obatin a bespoke sampling gap for your graph, you may do so as follows:
 
 ```python
-# read the Karate Club network
-G = nx.karate_club_graph()
+# An example network
+G = nx.gnp_random_graph(n = 50, p = 0.15)
 
 # Specify the graph space and create a new object
 allow_loops = False
@@ -156,11 +156,11 @@ Output:
 Sampling gap obtained = 162
 ~~~
 
-Note that the sampling gap obtained in each run might vary a bit, although it would be mostly stable around a value. Again, the print statements are muted here by specifying ```verbose = False``` at the time of creating the MCMC object. The print statements of particularly the sampling gap algorithm can be muted using the following code, even when it was not muted while creating the MCMC object.
+Note that the sampling gap obtained in each run might vary a bit, although it would be mostly stable around a value. Again, the print statements are muted here by specifying ```verbose = False``` at the time of creating the MCMC object. The print statements of the sampling gap algorithm in particular can be muted using the following code, even if it was not muted while creating the MCMC object.
 
 ```python
-# read the Karate Club network
-G = nx.karate_club_graph()
+# A dense example network
+G = nx.gnp_random_graph(n = 50, p = 0.15)
 
 # Specify the graph space and create a new object
 allow_loops = False
@@ -182,8 +182,8 @@ Sampling gap obtained = 159
 The default significance level of the autocorrelation hypothesis tests = 0.04 and the default number of parallel MCMC chains run for the Sampling Gap Algorithm = 10. However, you can change them by specifying as arguments to the function. For example, we can set the significance level as 10% and run 20 parallel MCMC chains as follows:
 
 ```python
-# read the Karate Club network
-G = nx.karate_club_graph()
+# An example network
+G = nx.gnp_random_graph(n = 50, p = 0.15)
 
 # Specify the graph space and create a new object
 allow_loops = False
@@ -209,8 +209,8 @@ Since both significance level and the number of parallel chains have been increa
 You can also specify a custom sampling gap that you want to run the convergence detection test with, using the ```sampling_gap``` function parameter.
 
 ```python
-# read the Karate Club network
-G = nx.karate_club_graph()
+# An example network
+G = nx.gnp_random_graph(n = 50, p = 0.15)
 
 # Specify the graph space and create a new object
 allow_loops = False

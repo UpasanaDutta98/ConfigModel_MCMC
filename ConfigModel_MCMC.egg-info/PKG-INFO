@@ -1,13 +1,11 @@
 Metadata-Version: 2.1
 Name: ConfigModel-MCMC
-Version: 0.0.2
+Version: 0.0.7
 Summary: A tool for sampling networks from the Configuration model
-Home-page: UNKNOWN
-Author: Upasana Dutta; Aaron Clauset
+Home-page: https://arxiv.org/abs/2105.12120
+Author: Upasana Dutta; Bailey K. Fosdick; Aaron Clauset
 Author-email: upasana.dutta@colorado.edu
-License: UNKNOWN
 Keywords: ConfigModel_MCMC,MCMC,Configuration model,double edge swap,degree sequence,null distribution,random graph
-Platform: UNKNOWN
 Classifier: Programming Language :: Python :: 3
 Classifier: License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)
 Classifier: Operating System :: OS Independent
@@ -20,6 +18,9 @@ License-File: LICENSE
 ## What is it?
 
 **ConfigModel_MCMC** is a tool for sampling networks from the Configuration model, given a network and a graph space. This code package builds upon the Double Edge Swap MCMC Graph Sampler by Fosdick et al. [1]. It detects convergence in the Double Edge Swap MCMC and samples networks from the MCMC's stationary distribution, so that the samples are uniform random draws from the Configuration model.
+
+The corresponding paper can be found on the arXiv [here](https://arxiv.org/abs/2105.12120).
+
 
 [[1]](https://epubs.siam.org/doi/pdf/10.1137/16M1087175) Bailey K. Fosdick, Daniel B. Larremore, Joel Nishimura, Johan Ugander (2018) Configuring Random Graph Models with Fixed Degree Sequences. SIAM Review 60(2):315–355.
 
@@ -35,6 +36,15 @@ The random stub-matching algorithm as described by Newman [2] and also implement
 `pip install ConfigModel_MCMC`
 
 This package supports Python>=3.7.x, and requires the packages numpy>=1.17.1, networkx>=2.4, scipy>=1.4.1, numba==0.49.1, arch==5.0.1, igraph==0.9.6 and tqdm==4.62.2. These dependencies are automatically installed while installing the package.
+
+Make sure the latest version of the package has been installed. To check, execute the following command:
+
+`pip show ConfigModel_MCMC`
+
+Details about the package including summary, version, authors, etc., would be displayed. The version number should be **0.0.7**. If not, try uninstalling and installing the package again, or execute the following command:
+
+`pip install ConfigModel_MCMC==0.0.7`
+
 
 ## Set-up
 
@@ -132,6 +142,21 @@ Output:
 ```
 
 In the above code, the first 5 networks are generated over a loop, while the next 5 networks are generated using a single command by specifying ```count=5``` as an argument to the function `get_graph( )`. Both ways are equally efficient on average. The default value of ```count``` is 1. The degree assortativity values of each of the networks generated are printed for reference.
+
+### Using igraph 
+
+The networks sampled from the Configuration model are by default `networkx` Graph objects. If the sampled networks are instead desired to be `igraph` Graph objects, you can specify it as the `return_type` argument to the `get_graph( )` function as shown below. Using "igraph" is typically much faster than using "networkx". This is also helpful when the end goal is to calculate some networks statistic of the sampled graphs, since [igraph](https://pypi.org/project/python-igraph/) offers extremely time-efficient [implementations](https://igraph.org/python/doc/api/igraph._igraph.GraphBase.html) of several widely-used network statistics.
+
+```python
+# An example network 
+G = nx.gnp_random_graph(n = 100, p = 0.1)
+
+# Specify the graph space and create a new object (using default graph space here)
+mcmc_object = CM.MCMC(G)
+
+# Get 5 more graphs using a single line.
+list_of_graphs = mcmc_object.get_graph(count=5, return_type = "igraph")
+```
 
 ### Sampling Gap heuristics
 
@@ -290,4 +315,3 @@ If you find a bug or you have any feedback, please email me at upasana.dutta@col
 
 ## License
 GNU General Public License v3
-

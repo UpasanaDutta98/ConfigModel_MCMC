@@ -110,6 +110,7 @@
                 <h1 id="user-guide">User Guide</h1>
 <h2 id="introduction">Introduction</h2>
 <p><strong>ConfigModel_MCMC</strong> is a tool for sampling networks from the Configuration model, given a network and a graph space. This code package builds upon the Double Edge Swap MCMC Graph Sampler by Fosdick et al. [1]. It detects convergence in the Double Edge Swap MCMC and samples networks from the MCMC's stationary distribution, so that the samples are uniform random draws from the Configuration model.</p>
+<p>The corresponding paper can be found on the arXiv <a href="https://arxiv.org/abs/2105.12120">here</a>.</p>
 <p><a href="https://epubs.siam.org/doi/pdf/10.1137/16M1087175">[1]</a> Bailey K. Fosdick, Daniel B. Larremore, Joel Nishimura, Johan Ugander (2018) Configuring Random Graph Models with Fixed Degree Sequences. SIAM Review 60(2):315–355.</p>
 <h3 id="why-use-configmodel_mcmc">Why use ConfigModel_MCMC?</h3>
 <p>The random stub-matching algorithm as described by Newman [2] and also implemented by the <a href="https://networkx.org/documentation/networkx-1.10/reference/generated/networkx.generators.degree_seq.configuration_model.html">configuration_model</a> function of the <a href="https://pypi.org/project/networkx/">networkx</a> package in Python works best only for the loopy multigraph space where every stub of network has distinct labels. This is because the graph returned by algorithm is a pseudograph, i.e., the graph is allowed to have both self-loops and parallel edges(multi-edges). Often times practitioners remove the self-loops and collapse the multi-edges in the network returned by the function to get a <em>simple network</em>, but this modification changes the degree sequence of the network. It also introduces a bias in the network generating process because the high-degree nodes are more likely to have self-loops and multi-edges attached to them than are the low-degree nodes. Therefore, the network generated is a biased sample. The <strong>ConfigModel_MCMC</strong> package lets you sample an unbiased sample from the Configuration model on eight different graph spaces parameterized by self-loops/no self-loops, multi-edges/no multi-edges and stub-labeled/vertex-labeled.</p>
@@ -119,8 +120,8 @@
 <p>This package supports Python&gt;=3.7.x, and requires the packages numpy&gt;=1.17.1, networkx&gt;=2.4, scipy&gt;=1.4.1, numba==0.49.1, arch==5.0.1, igraph==0.9.6 and tqdm==4.62.2. These dependencies are automatically installed while installing the package.</p>
 <p>Make sure the latest version of the package has been installed. To check, execute the following command:</p>
 <p><code>pip show ConfigModel_MCMC</code></p>
-<p>Details about the package including summary, version, authors, etc., would be displayed. The version number should be <strong>0.0.2</strong>. If not, try uninstalling and installing the package again, or execute the following command:</p>
-<p><code>pip install ConfigModel_MCMC==0.0.2</code></p>
+<p>Details about the package including summary, version, authors, etc., would be displayed. The version number should be <strong>0.0.7</strong>. If not, try uninstalling and installing the package again, or execute the following command:</p>
+<p><code>pip install ConfigModel_MCMC==0.0.7</code></p>
 <h2 id="set-up">Set-up</h2>
 <p>The <a href="https://pypi.org/project/arch/">arch module</a> uses the <a href="https://www.openblas.net/">OpenBLAS module</a> for estimating the model parameters for the DFGLS test. Since <code>OpenBLAS</code> uses multithreading on its own, it is recommended to limit the number of threads before you start Python, especially if running this package on a high-computing cluster.</p>
 <p>For example, if you are using Jupyter Notebook, execute the following commands in your terminal before launching Jupyter.</p>
@@ -194,5 +195,5 @@ $ python test.py
 
 <!--
 MkDocs version : 1.2.2
-Build Date UTC : 2021-09-13 16:32:44.553811+00:00
+Build Date UTC : 2022-06-03 03:17:31.082412+00:00
 -->

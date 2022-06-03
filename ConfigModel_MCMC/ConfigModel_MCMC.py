@@ -1,8 +1,9 @@
 """
 Created on Tue Dec 29 2020
-Edited on Sun Sep 9 2021
+Edited on Thu June 2 2021
 
 @author: Upasana Dutta
+Version: 0.0.7
 """
 
 import networkx as nx
@@ -18,6 +19,7 @@ import numba as nb
 from arch.unitroot import DFGLS
 import igraph as ig
 import time
+from collections import defaultdict
 
 jit =  nb.jit
         
@@ -275,7 +277,7 @@ def MCMC_step_stub(A,edge_list,swaps,rejected,allow_loops,allow_multi):
 def get_empty_nG(allow_loops, allow_multi):
     if allow_loops and allow_multi:
         G = nx.MultiGraph()
-    elif allow_loops and not llow_multi:
+    elif allow_loops and not allow_multi:
         G = nx.Graph()
     elif not allow_multi and not allow_loops:
         G = nx.Graph()
@@ -344,7 +346,7 @@ def graphs_after_McmcConvergence(step_function, G, A, edge_list, swaps, spacing,
         last_r[0] = r
         while found == 0:
             test_r = get_assortativities(step_function, A, m, edge_list, swaps, denominator, G_degree, allow_loops, allow_multi, is_vertex_labeled, total_iterations, last_r)
-            result = DFGLS(test_r, trend = "c") 
+            result = DFGLS(test_r, trend = "c", lags=0)
             pvalue = result.pvalue
             if pvalue < 0.05: # Reject non-stationarity
                 found = 1
@@ -402,7 +404,7 @@ def check_maxDegree_criterion(G):
     for eachtuple in degrees:
         degreeList.append(eachtuple[1])
     sorted_degrees = sorted(degreeList, reverse = True)
-    print(sorted_degrees[0])
+    # print(sorted_degrees[0])
     if sorted_degrees[0]*sorted_degrees[0] < (2*m/3): 
         return 1
     else:
@@ -422,7 +424,8 @@ def is_disconnected(deg_seq):
     return is_dis_main(deg_list,n_unique,n,deg_seq)
     
 def is_dis_main(deg_list,n_unique,n,deg_seq):
-    deg_list = list(deg_list)
+    
+    deg_list_ori = list(deg_list)
     
     if n==0:
         return False
@@ -622,6 +625,7 @@ class MCMC:
         self.verbose = verbose
         self.has_converged = False
         self.spacing = -1
+        self.obtained_spacing = False
         
         if nx.is_weighted(G):
             raise ValueError("Cannot apply double edge swap to weighted networks. Exiting.")
@@ -693,7 +697,8 @@ class MCMC:
             print("----- Running Burn-in -----\n")
             for j in tqdm(range(1000*m)): # Burn-in period
                 self.step(self.A, self.edge_list, self.swaps, rejected, self.allow_loops, self.allow_multi)
-            print("----- Burn-in Complete -----\n")
+            print("----- Burn-in Complete -----")
+            print("-- Obtaining Sampling Gap --")
         else:    
             for j in range(1000*m): # Burn-in period
                 self.step(self.A, self.edge_list, self.swaps, rejected, self.allow_loops, self.allow_multi)
@@ -746,6 +751,8 @@ class MCMC:
                 gap = gap + increment
                 
         sampling_gap = eta0
+        if local_verbose==True:
+            print("- Generating samples from CM -")
         return sampling_gap
    
     def initialise_MCMC_to_G(self): 
@@ -798,7 +805,7 @@ class MCMC:
                 if local_verbose==True:
                     print("The network does not satisfy the density criterion for automatic selection of sampling gap.")
                     print("Running the Sampling Gap Algorithm. This might take a while for large graphs.....")
-                sampling_gap = self.run_sampling_gap_algorithm(set_base_1=0)
+                sampling_gap = self.run_sampling_gap_algorithm(set_base_1=0, verbose=local_verbose)
                 self.initialise_MCMC_to_G()   
                 return sampling_gap
         else:
@@ -812,7 +819,7 @@ class MCMC:
                     if local_verbose==True:
                         print("The network does not satisfy the maximum degree criterion for automatic selection of sampling gap.")
                         print("Running the Sampling Gap Algorithm. This might take a while.....")
-                    sampling_gap = self.run_sampling_gap_algorithm(set_base_1=0)
+                    sampling_gap = self.run_sampling_gap_algorithm(set_base_1=0, verbose=local_verbose)
                     self.initialise_MCMC_to_G()
                     return sampling_gap
     
@@ -859,6 +866,12 @@ class MCMC:
 
         self.hash_map = {} # A dictionary where key = node label in the original network G and value = the corresponding node number between 0 and n-1
         self.reverse_hash_map = {} # A dictionary where key = node number between 0 and n-1 and value = the corresponding node label in the original network G    
+        self.metadata_map = defaultdict(dict)
+        for node_tuple in G.nodes(data=True):
+            for attribute in node_tuple[1]:
+                self.metadata_map[attribute][node_tuple[0]] = node_tuple[1][attribute]
+        
+        
         n = 0
         for node in G.nodes():
             self.hash_map[node] = n
@@ -874,11 +887,11 @@ class MCMC:
         number_of_loops = len(list_of_self_loops) # Number of self-loops
         if number_of_loops > 0 and self.allow_loops == False:
             if local_verbose == True:
-                warnings.warn("Graph G does not match the specified graph space as it contains self-loops. Removing self-loops from G.")
+                warnings.warn("Starting graph does not match the specified graph space as it contains self-loops. Removing self-loops from it.")
             for e in list_of_self_loops:
                 self.hashed_G.remove_edge(*e)
         if G.is_multigraph() == True and self.allow_multi == False and local_verbose == True:
-            warnings.warn("Graph G does not match the specified graph space as it is a MultiGraph. Converting G to a non-MultiGraph.")
+            warnings.warn("Starting graph G does not match the specified graph space as it contains multi-edges. Converting it to a non-MultiGraph.")
 
         List_edges = []
         for edge in self.hashed_G.edges():                    
@@ -922,6 +935,9 @@ class MCMC:
                 reverted_G.add_node(self.reverse_hash_map[i])
             for eachedge in list(G.edges()):
                 reverted_G.add_edge(self.reverse_hash_map[eachedge[0]], self.reverse_hash_map[eachedge[1]])
+            for attribute in self.metadata_map:
+                for node in reverted_G.nodes():
+                    reverted_G.nodes[node][attribute] = self.metadata_map[attribute][node]
             
         elif return_type == "igraph":
             reverted_G = ig.Graph(directed=False)
@@ -929,6 +945,9 @@ class MCMC:
             reverted_G.add_vertices(n)
             for i in range(len(reverted_G.vs)):
                 reverted_G.vs[i]["name"] = self.reverse_hash_map[i]
+            for attribute in self.metadata_map:
+                for i in range(len(reverted_G.vs)):
+                    reverted_G.vs[i][attribute] = self.metadata_map[attribute][self.reverse_hash_map[i]]
             
             rehashed_edgelist = []
             for eachedge in G.get_edgelist():
@@ -952,21 +971,25 @@ class MCMC:
         --------------------
         A graph or a list of graphs with the specified degree sequence, chosen uniformly at random from the desired graph space.
         '''
-            
         if sampling_gap == -999: # if user has not provided a sampling gap
-            self.spacing = self.get_sampling_gap(verbose)
+            if self.obtained_spacing == False:
+                self.spacing = self.get_sampling_gap(verbose) # obtain sampling gap
+                self.obtained_spacing = True
         else:
             self.spacing = sampling_gap # use user-defined sampling gap
-            
+                    
         list_of_networks, has_converged = graphs_after_McmcConvergence(self.step, self.hashed_G, self.A, self.edge_list, self.swaps, self.spacing, self.allow_loops, self.allow_multi, self.is_vertex_labeled, count, self.has_converged, self.r_denominator, self.S2, return_type)
-        self.has_converged = has_converged 
+        self.has_converged = has_converged         
         
         rehashing_req = 0
         nodes = self.original_G.nodes()
         for node in nodes:
-            if type(node) != int:
+            if type(node) != int: # meaning node label is string
                 rehashing_req = 1
                 break
+                
+        if len(self.original_G.nodes(data=True)[0]) != 0: # meaning nodes have attributes
+            rehashing_req = 1
                 
         if rehashing_req == 0:
             maxNodeLabel = max(nodes)
@@ -983,6 +1006,7 @@ class MCMC:
             for each_net in list_of_networks:
                 reverseHashed_net = self.revert_back(each_net, return_type)
                 rehashed_networks_from_configModel.append(reverseHashed_net)
+    
             if len(rehashed_networks_from_configModel) == 1:
                 return rehashed_networks_from_configModel[0]
             return rehashed_networks_from_configModel

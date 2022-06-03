@@ -4,6 +4,9 @@
 
 **ConfigModel_MCMC** is a tool for sampling networks from the Configuration model, given a network and a graph space. This code package builds upon the Double Edge Swap MCMC Graph Sampler by Fosdick et al. [1]. It detects convergence in the Double Edge Swap MCMC and samples networks from the MCMC's stationary distribution, so that the samples are uniform random draws from the Configuration model.
 
+The corresponding paper can be found on the arXiv [here](https://arxiv.org/abs/2105.12120).
+
+
 [[1]](https://epubs.siam.org/doi/pdf/10.1137/16M1087175) Bailey K. Fosdick, Daniel B. Larremore, Joel Nishimura, Johan Ugander (2018) Configuring Random Graph Models with Fixed Degree Sequences. SIAM Review 60(2):315–355.
 
 ### Why use ConfigModel_MCMC?
@@ -23,9 +26,9 @@ Make sure the latest version of the package has been installed. To check, execut
 
 `pip show ConfigModel_MCMC`
 
-Details about the package including summary, version, authors, etc., would be displayed. The version number should be **0.0.2**. If not, try uninstalling and installing the package again, or execute the following command:
+Details about the package including summary, version, authors, etc., would be displayed. The version number should be **0.0.7**. If not, try uninstalling and installing the package again, or execute the following command:
 
-`pip install ConfigModel_MCMC==0.0.2`
+`pip install ConfigModel_MCMC==0.0.7`
 
 
 ## Set-up

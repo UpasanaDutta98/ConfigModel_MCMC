@@ -1,9 +1,9 @@
 """
 Created on Tue Dec 29 2020
-Edited on Thu June 2 2021
+Edited on Thu Feb 10 2024
 
 @author: Upasana Dutta
-Version: 0.0.7
+Version: 0.1
 """
 
 import networkx as nx
@@ -156,8 +156,8 @@ def MCMC_step_vertex(A,edge_list,swaps,rejected,allow_loops,allow_multi):
     
     # Based upon the above cases we calculate the minimum probability of the 
     # swap and the reverse swap.
-    probTo = np.float(swapsTo)
-    probFrom = np.float(swapsFrom)
+    probTo = float(swapsTo)
+    probFrom = float(swapsFrom)
     
     if probFrom/probTo < 1.0:
         P = probFrom/probTo
@@ -631,6 +631,8 @@ class MCMC:
             raise ValueError("Cannot apply double edge swap to weighted networks. Exiting.")
         if G.is_directed():
             raise ValueError("Cannot apply double edge swap to directed networks. Exiting.")
+        if len(set(dict(nx.degree(G)).values())) == 1:
+            raise ValueError("This is a regular graph, degree assortativity is undefined. Exiting.")
         
         if self.allow_loops == True and self.allow_multi == False: # Loopy graph space
             G_degree = list(nx.degree(G))
@@ -751,8 +753,6 @@ class MCMC:
                 gap = gap + increment
                 
         sampling_gap = eta0
-        if local_verbose==True:
-            print("- Generating samples from CM -")
         return sampling_gap
    
     def initialise_MCMC_to_G(self): 
@@ -977,9 +977,9 @@ class MCMC:
                 self.obtained_spacing = True
         else:
             self.spacing = sampling_gap # use user-defined sampling gap
-                    
+        
         list_of_networks, has_converged = graphs_after_McmcConvergence(self.step, self.hashed_G, self.A, self.edge_list, self.swaps, self.spacing, self.allow_loops, self.allow_multi, self.is_vertex_labeled, count, self.has_converged, self.r_denominator, self.S2, return_type)
-        self.has_converged = has_converged         
+        self.has_converged = has_converged     
         
         rehashing_req = 0
         nodes = self.original_G.nodes()
@@ -988,8 +988,12 @@ class MCMC:
                 rehashing_req = 1
                 break
                 
-        if len(self.original_G.nodes(data=True)[0]) != 0: # meaning nodes have attributes
-            rehashing_req = 1
+        nodes = self.original_G.nodes(data=True)
+        for node in nodes:
+            if len(node[1]) != 0:
+                rehashing_req = 1
+                break
+
                 
         if rehashing_req == 0:
             maxNodeLabel = max(nodes)

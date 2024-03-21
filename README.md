@@ -20,15 +20,15 @@ The random stub-matching algorithm as described by Newman [2] and also implement
 
 `pip install ConfigModel_MCMC`
 
-This package supports Python>=3.7.x, and requires the packages numpy>=1.17.1, networkx>=2.4, scipy>=1.4.1, numba==0.49.1, arch==5.0.1, igraph==0.9.6 and tqdm==4.62.2. These dependencies are automatically installed while installing the package.
+This package has been tested with Python=3.8 and the required packages numpy==1.21.0, networkx==3.1, scipy==1.8.0, numba==0.56.0, arch==5.3.1, python-igraph==0.11.3 and tqdm==4.62.2. These dependencies are automatically installed while installing the `ConfigModel_MCMC` package.
 
 Make sure the latest version of the package has been installed. To check, execute the following command:
 
 `pip show ConfigModel_MCMC`
 
-Details about the package including summary, version, authors, etc., would be displayed. The version number should be **0.0.7**. If not, try uninstalling and installing the package again, or execute the following command:
+Details about the package including summary, version, authors, etc., would be displayed. The version number should be **0.2**. If not, try uninstalling and installing the package again, or execute the following command:
 
-`pip install ConfigModel_MCMC==0.0.7`
+`pip install ConfigModel_MCMC==0.2`
 
 
 ## Set-up
@@ -145,11 +145,12 @@ list_of_graphs = mcmc_object.get_graph(count=5, return_type = "igraph")
 
 ### Sampling Gap heuristics
 
-If the network does not satisfy the conditions under which the automatic selection of the Sampling Gap is possible, the Sampling Gap algorithm will be run. This function might take a while, if the network is large.
+If the network does not satisfy the conditions under which the automatic selection of the Sampling Gap is possible, the Sampling Gap algorithm will be run. This function might take a while, if the network is large. The following example uses the Karate Club Network. Networkx in a recent update added interaction frequency as weights to the Karate Club network. However, the standard practice in the literature is to treat it as a simple graph, so we convert the weighted graph to an unweighted one.
 
 ```python
 # read the Karate Club network
 G = nx.karate_club_graph()
+G = nx.from_edgelist(G.edges()) # removing weights from the Karate-Club network.
 
 # Specify the graph space and create a new object
 allow_loops = False
@@ -177,6 +178,7 @@ The messages printed in the output can be muted by specifying ```verbose = False
 ```python
 # read the Karate Club network
 G = nx.karate_club_graph()
+G = nx.from_edgelist(G.edges()) # removing weights from the Karate-Club network.
 
 # Specify the graph space and create a new object
 allow_loops = False
@@ -195,6 +197,7 @@ If you want to run the Sampling Gap Algorithm to obatin a bespoke sampling gap f
 ```python
 # read the Karate Club network
 G = nx.karate_club_graph()
+G = nx.from_edgelist(G.edges()) # removing weights from the Karate-Club network.
 
 # Specify the graph space and create a new object
 allow_loops = False
@@ -217,6 +220,7 @@ Note that the sampling gap obtained in each run might vary a bit, although it wo
 ```python
 # read the Karate Club network
 G = nx.karate_club_graph()
+G = nx.from_edgelist(G.edges()) # removing weights from the Karate-Club network.
 
 # Specify the graph space and create a new object
 allow_loops = False
@@ -240,6 +244,7 @@ The default significance level of the autocorrelation hypothesis tests = 0.04 an
 ```python
 # read the Karate Club network
 G = nx.karate_club_graph()
+G = nx.from_edgelist(G.edges()) # removing weights from the Karate-Club network.
 
 # Specify the graph space and create a new object
 allow_loops = False
@@ -267,6 +272,7 @@ You can also specify a custom sampling gap that you want to run the convergence 
 ```python
 # read the Karate Club network
 G = nx.karate_club_graph()
+G = nx.from_edgelist(G.edges()) # removing weights from the Karate-Club network.
 
 # Specify the graph space and create a new object
 allow_loops = False
@@ -296,7 +302,7 @@ The package will not work for weighted networks, directed networks, hypergraphs,
 
 ## Feedback and bugs
 
-If you find a bug or you have any feedback, please email me at upasana.dutta@colorado.edu.
+If you find a bug or you have any feedback, please email me at upasanad@seas.upenn.edu
 
 ## License
 GNU General Public License v3

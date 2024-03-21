@@ -2,7 +2,7 @@ import io
 from pkgutil import walk_packages
 from setuptools import setup
 
-with open('/Users/upasanadutta/Documents/AaronClauset_BookWork/ConfigModel_MCMC/README.md') as f:
+with open('./README.md') as f:
     long_description = f.read()
 
 def find_packages(path):
@@ -23,7 +23,7 @@ def read_requirements(filename):
 setup(
     name="ConfigModel_MCMC",
     packages=list(find_packages('.')),
-    version="0.0.7",
+    version="0.2",
     author="Upasana Dutta; Bailey K. Fosdick; Aaron Clauset",
     author_email="upasana.dutta@colorado.edu",
     description="A tool for sampling networks from the Configuration model",

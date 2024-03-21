@@ -19,15 +19,15 @@ The random stub-matching algorithm as described by Newman [2] and also implement
 
 `pip install ConfigModel_MCMC`
 
-This package supports Python>=3.7.x, and requires the packages numpy>=1.17.1, networkx>=2.4, scipy>=1.4.1, numba==0.49.1, arch==5.0.1, igraph==0.9.6 and tqdm==4.62.2. These dependencies are automatically installed while installing the package.
+This package has been tested with Python=3.8 and the required packages numpy==1.21.0, networkx==3.1, scipy==1.8.0, numba==0.56.0, arch==5.3.1, python-igraph==0.11.3 and tqdm==4.62.2. These dependencies are automatically installed while installing the `ConfigModel_MCMC` package.
 
 Make sure the latest version of the package has been installed. To check, execute the following command:
 
 `pip show ConfigModel_MCMC`
 
-Details about the package including summary, version, authors, etc., would be displayed. The version number should be **0.0.7**. If not, try uninstalling and installing the package again, or execute the following command:
+Details about the package including summary, version, authors, etc., would be displayed. The version number should be **0.2**. If not, try uninstalling and installing the package again, or execute the following command:
 
-`pip install ConfigModel_MCMC==0.0.7`
+`pip install ConfigModel_MCMC==0.2`
 
 
 
@@ -59,7 +59,7 @@ The package will not work for weighted networks, directed networks, hypergraphs,
 
 ## Feedback and bugs
 
-If you find a bug or you have any questions/feedback, please contact upasana.dutta@colorado.edu.
+If you find a bug or you have any questions/feedback, please contact upasanad@seas.upenn.edu.
 
 ## License
 
